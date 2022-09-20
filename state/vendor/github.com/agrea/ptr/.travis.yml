@@ -1,0 +1,12 @@
+env:
+  global:
+    CC_TEST_REPORTER_ID: 72499f8d927d59414871851c8fbe358c697cc6aa5f8d72561406e0e6fb7b9d9d
+language: go
+go:
+  - 1.6
+  - 1.7
+  - 1.8
+  - 1.9
+  - 1.10
+  - master
+script: go test -v ./...
