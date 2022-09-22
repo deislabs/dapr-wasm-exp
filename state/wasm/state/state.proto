@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
+package state;
+
+option go_package = "github.com/dapr/components-contrib/state/wasm/state";
+
+// The Store service definition.
+// go:plugin type=plugin version=1
+service Store {
+  // Sends a greeting
+  rpc Init(InitRequest) returns (InitResponse) {}
+  rpc Features(FeaturesRequest) returns (FeaturesResponse) {}
+  rpc Get(GetRequest) returns (GetResponse) {}
+  rpc Set(SetRequest) returns (SetResponse) {}
+  rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+}
+
+// The request message containing the user's name.
+message InitRequest {
+  Metadata metadata = 1;
+}
+
+message Metadata {
+  // Name is the name of the component that's being used.
+  string name = 1;
+  // Properties is the metadata properties.
+  map<string, string> properties = 2;
+}
+
+// The response message for the init
+message InitResponse {
+}
+
+message FeaturesRequest {
+}
+
+message FeaturesResponse {
+  repeated string features = 1;
+}
+
+// GetRequest is the object describing a state fetch request.
+message GetRequest  {
+    string key = 1;
+    map<string, string> metadata = 2;
+    GetStateOption options = 3;
+}
+
+// GetStateOption controls how a state store reacts to a get request.
+message GetStateOption {
+  string consistency = 1;
+}
+
+// GetResponse is the response object for getting state.
+message GetResponse  {
+    repeated int32 data = 1;
+    string etag = 2;
+    map<string, string> metadata = 3;
+    string content_type = 4;
+}
+
+// GetRequest is the object describing a state fetch request.
+message SetRequest  {
+  string key = 1;
+  google.protobuf.Any value = 2;
+  string etag = 3;
+  map<string, string> metadata = 4;
+  SetStateOption options = 5;
+  string content_type = 6;
+}
+
+// SetStateOption controls how a state store reacts to a set request.
+message SetStateOption {
+  string concurrency = 1;
+  string consistency = 2;
+}
+
+message SetResponse {
+}
+
+// GetRequest is the object describing a state fetch request.
+message DeleteRequest  {
+  string key = 1;
+  string etag = 2;
+  map<string, string> metadata = 3;
+  DeleteStateOption options = 4;
+}
+
+// DeleteStateOption controls how a state store reacts to a delete request.
+message DeleteStateOption {
+  string concurrency = 1;
+  string consistency = 2;
+}
+
+message DeleteResponse {
+}
+
