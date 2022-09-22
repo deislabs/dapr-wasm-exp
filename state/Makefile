@@ -2,4 +2,4 @@ default: build
 
 .PHONY: build
 build:
-	tinygo build -wasm-abi=generic -target=wasi .
+	/home/simon/go/src/github.com/tinygo-org/tinygo/build/tinygo build -wasm-abi=generic -target=wasi .

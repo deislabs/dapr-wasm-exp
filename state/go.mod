@@ -1,4 +1,4 @@
-module github.com/deislabs/state
+module github.com/deislabs/dapr-wasm-exp/state
 
 go 1.19
 
@@ -8,6 +8,7 @@ require (
 	github.com/dapr/kit v0.0.2
 	github.com/golang/mock v1.6.0
 	github.com/stretchr/testify v1.8.0
+	github.com/wapc/wapc-guest-tinygo v0.3.3
 )
 
 require (

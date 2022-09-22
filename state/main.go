@@ -7,14 +7,26 @@ import (
 	"github.com/dapr/components-contrib/state"
 	"github.com/dapr/kit/logger"
 
-	"github.com/deislabs/state/inmemory"
+	"github.com/deislabs/dapr-wasm-exp/state/inmemory"
+
+	wapc "github.com/wapc/wapc-guest-tinygo"
 )
 
 func main() {
+
+	wapc.RegisterFunctions(wapc.Functions{
+		"saveandrestore": saveandrestore,
+	})
+}
+
+func saveandrestore(payload []byte) ([]byte, error) {
+	fmt.Println("saveandrestore called")
 	store := inmemory.NewInMemoryStateStore(logger.NewLogger("test"))
 	store.Init(state.Metadata{})
 	keyA := "theFirstKey"
-	valueA := "value of key"
+	valueA := string(payload)
+	fmt.Printf("ValueA: %s\n", valueA)
+
 	// set
 	setReq := &state.SetRequest{
 		Key:   keyA,
@@ -29,10 +41,12 @@ func main() {
 	getReq := &state.GetRequest{
 		Key: keyA,
 	}
+
 	resp, err := store.Get(getReq)
 	if err != nil {
 		panic(err)
 	}
+	fmt.Printf("ValueA: %s\n", string(resp.Data))
 
-	fmt.Printf("round trip: %s\n", string(resp.Data))
+	return []byte(fmt.Sprintf("round trip: %s\n", string(resp.Data))), nil
 }
