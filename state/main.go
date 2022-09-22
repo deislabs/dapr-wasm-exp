@@ -29,9 +29,10 @@ func saveandrestore(payload []byte) ([]byte, error) {
 
 	// set
 	setReq := &state.SetRequest{
-		Key:   keyA,
-		Value: valueA,
-		ETag:  ptr.String("the etag"),
+		Key:      keyA,
+		Value:    valueA,
+		ETag:     ptr.String("the etag"),
+		Metadata: map[string]string{"ttlInSeconds": "100"},
 	}
 	err := store.Set(setReq)
 	if err != nil {
