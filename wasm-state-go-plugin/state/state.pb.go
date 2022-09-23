@@ -4,11 +4,12 @@
 // 	protoc               v3.21.6
 // source: state.proto
 
+//import "google/protobuf/any.proto";
+
 package state
 
 import (
 	context "context"
-	anypb "github.com/knqyf263/go-plugin/types/known/anypb"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
@@ -171,7 +172,7 @@ type GetResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Data        []int32           `protobuf:"varint,1,rep,packed,name=data,proto3" json:"data,omitempty"`
+	Data        []byte            `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
 	Etag        string            `protobuf:"bytes,2,opt,name=etag,proto3" json:"etag,omitempty"`
 	Metadata    map[string]string `protobuf:"bytes,3,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	ContentType string            `protobuf:"bytes,4,opt,name=content_type,json=contentType,proto3" json:"content_type,omitempty"`
@@ -181,7 +182,7 @@ func (x *GetResponse) ProtoReflect() protoreflect.Message {
 	panic(`not implemented`)
 }
 
-func (x *GetResponse) GetData() []int32 {
+func (x *GetResponse) GetData() []byte {
 	if x != nil {
 		return x.Data
 	}
@@ -216,7 +217,7 @@ type SetRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	Key         string            `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	Value       *anypb.Any        `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	Data        []byte            `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
 	Etag        string            `protobuf:"bytes,3,opt,name=etag,proto3" json:"etag,omitempty"`
 	Metadata    map[string]string `protobuf:"bytes,4,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	Options     *SetStateOption   `protobuf:"bytes,5,opt,name=options,proto3" json:"options,omitempty"`
@@ -234,9 +235,9 @@ func (x *SetRequest) GetKey() string {
 	return ""
 }
 
-func (x *SetRequest) GetValue() *anypb.Any {
+func (x *SetRequest) GetData() []byte {
 	if x != nil {
-		return x.Value
+		return x.Data
 	}
 	return nil
 }

@@ -11,15 +11,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package wasm
+package wasm_state_go_plugin
 
 import (
+	"bytes"
 	"context"
-	"github.com/dapr/kit/logger"
-	"github.com/knqyf263/go-plugin/types/known/anypb"
-
+	"encoding/gob"
 	"github.com/dapr/components-contrib/state"
-	stateWasm "github.com/dapr/components-contrib/state/wasm/state"
+	"github.com/dapr/kit/logger"
+	stateWasm "github.com/deislabs/dapr-wasm-exp/wasm-state-go-plugin/state"
 )
 
 type wasmStore struct {
@@ -55,9 +55,15 @@ func (wasmStore *wasmStore) Features() []state.Feature {
 }
 
 func (wasmStore *wasmStore) Delete(req *state.DeleteRequest) error {
+	var etag string = ""
+
+	if req.ETag != nil {
+		etag = *req.ETag
+	}
+
 	_, err := wasmStore.store.Delete(context.Background(), stateWasm.DeleteRequest{
 		Key:      req.Key,
-		Etag:     *req.ETag,
+		Etag:     etag,
 		Metadata: req.Metadata,
 		Options:  &stateWasm.DeleteStateOption{Concurrency: req.Options.Concurrency, Consistency: req.Options.Consistency},
 	})
@@ -76,13 +82,8 @@ func (wasmStore *wasmStore) Get(req *state.GetRequest) (*state.GetResponse, erro
 		return nil, err
 	}
 
-	var data []byte
-	for i := 0; i < len(res.Data); i++ {
-		data = append(data, byte(res.Data[i]))
-	}
-
 	return &state.GetResponse{
-		Data:        data,
+		Data:        res.Data,
 		ETag:        &res.Etag,
 		Metadata:    res.Metadata,
 		ContentType: &res.ContentType,
@@ -90,19 +91,43 @@ func (wasmStore *wasmStore) Get(req *state.GetRequest) (*state.GetResponse, erro
 }
 
 func (wasmStore *wasmStore) Set(req *state.SetRequest) error {
+	var etag string = ""
+	var contentType string = ""
+
+	if req.ETag != nil {
+		etag = *req.ETag
+	}
+
+	if req.ContentType != nil {
+		contentType = *req.ContentType
+	}
+
+	data := getBytes(req.Value)
 	_, err := wasmStore.store.Set(context.Background(), stateWasm.SetRequest{
-		Key: req.Key,
-		Value: &anypb.Any{
-			TypeUrl: "",
-			Value:   nil,
-		},
-		Etag:        *req.ETag,
+		Key:         req.Key,
+		Data:        data,
+		Etag:        etag,
 		Metadata:    req.Metadata,
 		Options:     &stateWasm.SetStateOption{Consistency: req.Options.Consistency},
-		ContentType: *req.ContentType,
+		ContentType: contentType,
 	})
 
 	return err
+}
+
+func getBytes(key interface{}) []byte {
+	switch key.(type) {
+	case string:
+		return []byte(key.(string))
+	default:
+		var buf bytes.Buffer
+		enc := gob.NewEncoder(&buf)
+		err := enc.Encode(key)
+		if err != nil {
+			return []byte{}
+		}
+		return buf.Bytes()
+	}
 }
 
 func (wasmStore *wasmStore) BulkSet(req []state.SetRequest) error {

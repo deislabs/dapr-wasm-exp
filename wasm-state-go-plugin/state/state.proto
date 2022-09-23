@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-import "google/protobuf/any.proto";
+//import "google/protobuf/any.proto";
 
 package state;
 
-option go_package = "github.com/dapr/components-contrib/state/wasm/state";
+option go_package = "github.com/deislabs/dapr-wasm-exp/wasm-state-go-plugin/state";
 
 // The Store service definition.
 // go:plugin type=plugin version=1
@@ -54,7 +54,7 @@ message GetStateOption {
 
 // GetResponse is the response object for getting state.
 message GetResponse  {
-    repeated int32 data = 1;
+    bytes data = 1;
     string etag = 2;
     map<string, string> metadata = 3;
     string content_type = 4;
@@ -63,7 +63,7 @@ message GetResponse  {
 // GetRequest is the object describing a state fetch request.
 message SetRequest  {
   string key = 1;
-  google.protobuf.Any value = 2;
+  bytes data = 2;
   string etag = 3;
   map<string, string> metadata = 4;
   SetStateOption options = 5;

@@ -6,6 +6,8 @@
 // 	protoc               v3.21.6
 // source: state.proto
 
+//import "google/protobuf/any.proto";
+
 package state
 
 import (
