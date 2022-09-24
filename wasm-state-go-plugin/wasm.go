@@ -51,7 +51,29 @@ func (wasmStore *wasmStore) Close() error {
 }
 
 func (wasmStore *wasmStore) Features() []state.Feature {
-	return []state.Feature{state.FeatureETag, state.FeatureTransactional}
+	features, err := wasmStore.store.Features(context.Background(), stateWasm.FeaturesRequest{})
+
+	if err != nil {
+		return []state.Feature{}
+	}
+
+	var featuresArray []state.Feature
+
+	for _, feature := range features.Features {
+		switch feature {
+		case string(state.FeatureETag):
+			featuresArray = append(featuresArray, state.FeatureETag)
+			break
+		case string(state.FeatureTransactional):
+			featuresArray = append(featuresArray, state.FeatureTransactional)
+			break
+		case string(state.FeatureQueryAPI):
+			featuresArray = append(featuresArray, state.FeatureQueryAPI)
+			break
+		}
+	}
+
+	return featuresArray
 }
 
 func (wasmStore *wasmStore) Delete(req *state.DeleteRequest) error {
