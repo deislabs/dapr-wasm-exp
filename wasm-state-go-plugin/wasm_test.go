@@ -1,10 +1,11 @@
 package wasm_state_go_plugin
 
 import (
+	"testing"
+
 	"github.com/dapr/components-contrib/state"
 	"github.com/dapr/kit/logger"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestReadAndWrite(t *testing.T) {
