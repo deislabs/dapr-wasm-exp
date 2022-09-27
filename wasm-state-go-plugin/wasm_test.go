@@ -66,3 +66,17 @@ func TestReadAndWrite(t *testing.T) {
 		assert.Nil(t, err)
 	})
 }
+
+func TestFeatures(t *testing.T) {
+	store, err := NewStateWasmStore(logger.NewLogger("test"), "./test-store/test_store.wasm")
+	assert.Nil(t, err)
+
+	store.Init(state.Metadata{})
+
+	t.Run("get features", func(t *testing.T) {
+		features := store.Features()
+		assert.NotNil(t, features)
+		assert.Equal(t, 1, len(features))
+		assert.Equal(t, state.FeatureTransactional, features[0])
+	})
+}

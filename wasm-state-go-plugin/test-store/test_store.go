@@ -41,7 +41,7 @@ func (store TestStore) Init(context.Context, state.InitRequest) (state.InitRespo
 }
 
 func (store TestStore) Features(context.Context, state.FeaturesRequest) (state.FeaturesResponse, error) {
-	return state.FeaturesResponse{Features: []string{}}, nil
+	return state.FeaturesResponse{Features: []string{"TRANSACTIONAL"}}, nil
 }
 
 func (store TestStore) Set(_ context.Context, req state.SetRequest) (state.SetResponse, error) {
