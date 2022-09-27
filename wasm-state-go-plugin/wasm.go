@@ -17,8 +17,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/gob"
+
 	"github.com/dapr/components-contrib/state"
 	"github.com/dapr/kit/logger"
+
 	stateWasm "github.com/deislabs/dapr-wasm-exp/wasm-state-go-plugin/state"
 )
 

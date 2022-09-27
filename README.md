@@ -14,19 +14,18 @@ What if we could use Wasm to allow Dapr to be lighter weight? What if we could c
 
 ## Areas of research
 
-### Dapr as a Wasm host
-Imagine if Dapr was a host for a Wasm application and the Wasm application was able to use the Dapr capabilities via the component model interface. This would enable a user application to run within the Dapr process space, eliminating the network boundary and the need of having a sidecar. This would reduce CoGs and increase performance.
-
 ### Dapr components as Wasm modules
 Imagine if Dapr components were able to compile to Wasm. A user application would be able to includes these capabilities within its own process space and eliminate the need to run the Dapr sidecar. This would reduce CoGs and increase performance.
 
-### Other areas of research
-TBD: Are there other areas of interest that would achieve the goals of enabling lower CoGs and increase performance while enabling developers to leverage the beneficial functionality of Dapr.
+#### Wasm State Go Plugin
+As an experiment, we implemented a simple state store Wasm plugin and interface using the [Go Plugin System over WebAssembly](https://github.com/knqyf263/go-plugin) to illustrate how Dapr or another host could embed a Go Dapr capability as a Wasm module.
 
-## Call to Action
-Our goals are the following:
-1) Determine the most promising path after a day or so of research.
-2) Build a proof of concept based on that research.
-3) Measure the results of the proof of concept.
-4) Determine next opportunities based on our learning.
+In the [wasm-state-go-plugin](./wasm-state-go-plugin) you will find the result of the experiment. The readme in that directory explains the details of the experiment.
+
+### Dapr as a Wasm host (Future)
+Imagine if Dapr was a host for a Wasm application and the Wasm application was able to use the Dapr capabilities via the component model interface. This would enable a user application to run within the Dapr process space, eliminating the network boundary and the need of having a sidecar. This would reduce CoGs and increase performance.
+
+## Disclaimer
+This is an experiment and is not intended for production usage.
+
 
