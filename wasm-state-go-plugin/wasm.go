@@ -25,7 +25,8 @@ import (
 )
 
 type wasmStore struct {
-	store stateWasm.Store
+	storePlugin *stateWasm.StorePlugin
+	store       stateWasm.Store
 }
 
 func NewStateWasmStore(logger logger.Logger, path string) (state.Store, error) {
@@ -38,7 +39,8 @@ func NewStateWasmStore(logger logger.Logger, path string) (state.Store, error) {
 	store, err := storePlugin.Load(ctx, path)
 
 	return &wasmStore{
-		store: store,
+		storePlugin: storePlugin,
+		store:       store,
 	}, nil
 }
 
@@ -46,10 +48,6 @@ func (wasmStore *wasmStore) Init(metadata state.Metadata) error {
 	_, err := wasmStore.store.Init(context.Background(), stateWasm.InitRequest{Metadata: &stateWasm.Metadata{}})
 
 	return err
-}
-
-func (wasmStore *wasmStore) Close() error {
-	return nil
 }
 
 func (wasmStore *wasmStore) Features() []state.Feature {
@@ -146,4 +144,8 @@ func (wasmStore *wasmStore) BulkDelete(req []state.DeleteRequest) error {
 
 func (wasmStore *wasmStore) BulkGet(req []state.GetRequest) (bool, []state.BulkGetResponse, error) {
 	return false, nil, nil
+}
+
+func (wasmStore *wasmStore) Close() error {
+	return wasmStore.storePlugin.Close(context.Background())
 }

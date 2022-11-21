@@ -51,6 +51,14 @@ func NewStorePlugin(ctx context.Context, opt StorePluginOption) (*StorePlugin, e
 		config:  config,
 	}, nil
 }
+
+func (p *StorePlugin) Close(ctx context.Context) (err error) {
+	if r := p.runtime; r != nil {
+		err = r.Close(ctx)
+	}
+	return
+}
+
 func (p *StorePlugin) Load(ctx context.Context, pluginPath string) (Store, error) {
 	b, err := os.ReadFile(pluginPath)
 	if err != nil {
@@ -155,6 +163,9 @@ func (p *storePlugin) Init(ctx context.Context, request InitRequest) (response I
 		return response, err
 	}
 	dataSize := uint64(len(data))
+	if dataSize == 0 {
+		return response, nil
+	}
 	results, err := p.malloc.Call(ctx, dataSize)
 	if err != nil {
 		return response, err
@@ -197,6 +208,9 @@ func (p *storePlugin) Features(ctx context.Context, request FeaturesRequest) (re
 		return response, err
 	}
 	dataSize := uint64(len(data))
+	if dataSize == 0 {
+		return response, nil
+	}
 	results, err := p.malloc.Call(ctx, dataSize)
 	if err != nil {
 		return response, err
@@ -239,6 +253,9 @@ func (p *storePlugin) Get(ctx context.Context, request GetRequest) (response Get
 		return response, err
 	}
 	dataSize := uint64(len(data))
+	if dataSize == 0 {
+		return response, nil
+	}
 	results, err := p.malloc.Call(ctx, dataSize)
 	if err != nil {
 		return response, err
@@ -281,6 +298,9 @@ func (p *storePlugin) Set(ctx context.Context, request SetRequest) (response Set
 		return response, err
 	}
 	dataSize := uint64(len(data))
+	if dataSize == 0 {
+		return response, nil
+	}
 	results, err := p.malloc.Call(ctx, dataSize)
 	if err != nil {
 		return response, err
@@ -323,6 +343,9 @@ func (p *storePlugin) Delete(ctx context.Context, request DeleteRequest) (respon
 		return response, err
 	}
 	dataSize := uint64(len(data))
+	if dataSize == 0 {
+		return response, nil
+	}
 	results, err := p.malloc.Call(ctx, dataSize)
 	if err != nil {
 		return response, err
